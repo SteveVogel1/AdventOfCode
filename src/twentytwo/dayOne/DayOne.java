@@ -1,13 +1,12 @@
 package twentytwo.dayOne;
 
-import twentytwo.helper.Helper;
+import twentytwo.helper.DailyTask;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class DayOne {
+public class DayOne implements DailyTask {
 
     public static void main(String[] args) {
         DayOne dayOne = new DayOne();
@@ -15,42 +14,40 @@ public class DayOne {
     }
 
 
-    private void run(){
-        taskA();
-        taskB();
-    }
-
-    private void taskA(){
-        List<String> input = new Helper().readFile("src/twentytwo/dayOne/input.txt");
+    public String taskA(List<String> input){
         List<Long> calories = new ArrayList<>();
-        Long calory = 0L;
+        long calory = 0L;
         for(String line : input){
             if(line.isEmpty()){
                 calories.add(calory);
                 calory = 0L;
             }else {
-                calory += Long.valueOf(line);
+                calory += Long.parseLong(line);
             }
         }
         calories.add(calory);
 
-        System.out.println(calories.stream().max(Comparator.comparingLong(value -> value)).get());
+        return String.valueOf(calories.stream().max(Comparator.comparingLong(value -> value)).get());
     }
 
-    private void taskB(){
-        List<String> input = new Helper().readFile("src/twentytwo/dayOne/input.txt");
+    public String taskB(List<String> input){
         List<Long> calories = new ArrayList<>();
-        Long calory = 0L;
+        long calory = 0L;
         for(String line : input){
             if(line.isEmpty()){
                 calories.add(calory);
                 calory = 0L;
             }else {
-                calory += Long.valueOf(line);
+                calory += Long.parseLong(line);
             }
         }
         calories.add(calory);
 
-        System.out.println(calories.stream().sorted(Comparator.reverseOrder()).limit(3).collect(Collectors.summingLong(Long::longValue)));
+        return String.valueOf(
+                calories.stream()
+                .sorted(Comparator.reverseOrder())
+                .limit(3)
+                .mapToLong(Long::longValue)
+                .sum());
     }
 }
