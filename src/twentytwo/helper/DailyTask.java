@@ -3,12 +3,13 @@ package twentytwo.helper;
 import java.util.List;
 
 public interface DailyTask {
-
     String taskA(List<String> input);
     String taskB(List<String> input);
 
+    String getFileName();
+
     private List<String> readInput(){
-        return new Helper().readFile("src/twentytwo/dayOne/input.txt");
+        return new Helper().readFile(getFileName());
     }
 
     default void run(){

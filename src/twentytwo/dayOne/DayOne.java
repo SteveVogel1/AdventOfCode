@@ -13,6 +13,9 @@ public class DayOne implements DailyTask {
         dayOne.run();
     }
 
+    public String getFileName() {
+        return "src/twentytwo/dayOne/input.txt";
+    }
 
     public String taskA(List<String> input){
         List<Long> calories = new ArrayList<>();
