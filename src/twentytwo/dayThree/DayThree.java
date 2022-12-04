@@ -1,6 +1,9 @@
 package twentytwo.dayThree;
 
 import twentytwo.helper.DailyTask;
+
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 public class DayThree implements DailyTask {
@@ -15,7 +18,7 @@ public class DayThree implements DailyTask {
     }
 
     public String taskA(List<String> input){
-        long points = 0;
+       long points = 0;
        for(String line: input){
            String start = line.substring(0, line.length() / 2);
            String end = line.substring(line.length() / 2);
@@ -40,6 +43,20 @@ public class DayThree implements DailyTask {
     }
 
     public String taskB(List<String> input){
-        return "";
+        long points = 0;
+        for(int i = 0; i < input.size() / 3; i++){
+            HashSet<String> setA = new HashSet<>( Arrays.asList(input.get(i*3).split("")));
+            HashSet<String> setB = new HashSet<>( Arrays.asList(input.get((i*3)+1).split("")));
+            HashSet<String> setC = new HashSet<>( Arrays.asList(input.get((i*3)+2).split("")));
+
+            setA.retainAll(setB);
+            setA.retainAll(setC);
+
+            if(setA.size() == 1){
+                points += getPriority(((String)setA.toArray()[0]).charAt(0));
+            }
+        }
+        return String.valueOf(points);
+
     }
 }
