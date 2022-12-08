@@ -11,10 +11,6 @@ public class Template implements DailyTask {
         day.run();
     }
 
-    public String getFileName() {
-        return "src/twentytwo/daySix/input.txt";
-    }
-
     public String taskA(List<String> input){
         return "";
     }
