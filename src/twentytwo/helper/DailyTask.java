@@ -6,7 +6,9 @@ public interface DailyTask {
     String taskA(List<String> input);
     String taskB(List<String> input);
 
-    String getFileName();
+    default String getFileName(){
+        return "src/twentytwo/" + this.getClass().getSimpleName() + "/input.txt";
+    }
 
     private List<String> readInput(){
         return new Helper().readFile(getFileName());
