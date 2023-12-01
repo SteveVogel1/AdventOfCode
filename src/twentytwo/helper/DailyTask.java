@@ -1,5 +1,6 @@
 package twentytwo.helper;
 
+import javax.sound.midi.Soundbank;
 import java.util.List;
 
 public interface DailyTask {
@@ -15,10 +16,14 @@ public interface DailyTask {
     }
 
     default void run(){
+        long startTime = System.currentTimeMillis();
         List<String> input = readInput();
         System.out.println("Task A:");
         System.out.println(taskA(input));
         System.out.println("Task B:");
         System.out.println(taskB(input));
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("Runtime: " + (endTime - startTime) + "ms");
     }
 }
