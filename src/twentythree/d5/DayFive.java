@@ -17,6 +17,7 @@ public class DayFive implements DailyTask {
 
 
     Long[] initSet;
+    List<IRange> initList;
     List<Converter> seedToSoil = new ArrayList<>();
     List<Converter> soilToFertilizer = new ArrayList<>();
     List<Converter> fertilizerToWater = new ArrayList<>();
@@ -28,7 +29,7 @@ public class DayFive implements DailyTask {
 
     public String taskA(List<String> input){
 
-        parseInput(new ArrayList<>(input), true);
+        parseInput(new ArrayList<>(input));
 
         for(List<Converter> converters: converterList){
             for(int i = 0; i < initSet.length; i++){
@@ -46,25 +47,21 @@ public class DayFive implements DailyTask {
         return String.valueOf(res);
     }
 
-    void parseInput(List<String> input, boolean taskA){
+    void parseInput(List<String> input){
         List<Converter> currentList = new ArrayList<>();
         String[] seed = input.get(0).substring(7).trim().split(" ");
-        if(taskA) {
-            initSet = new Long[seed.length];
-            for (int i = 0; i < seed.length; i++) {
-                initSet[i] = Long.valueOf(seed[i].trim());
-            }
-        }else{
-            List<Long> initList = new ArrayList<>();
-            for (int i = 0; i < seed.length; i+=2) {
-                long start = Long.parseLong(seed[i]);
-                long range = Long.parseLong(seed[i+1]);
-                for(int x = 0; x < range; x++){
-                    initList.add(start+x);
-                }
-            }
-            initSet = initList.toArray(new Long[]{});
+
+        initSet = new Long[seed.length];
+        for (int i = 0; i < seed.length; i++) {
+            initSet[i] = Long.valueOf(seed[i].trim());
         }
+        initList = new ArrayList<>();
+        for (int i = 0; i < seed.length; i+=2) {
+            long start = Long.parseLong(seed[i]);
+            long range = Long.parseLong(seed[i+1]);
+            initList.add(new Range(start, range));
+        }
+
         input.remove(0);
         input.remove(0);
         for(String line : input){
@@ -76,6 +73,9 @@ public class DayFive implements DailyTask {
                     currentList.add(new Converter(x[0], x[1], x[2]));
                 }
             }
+        }
+        for(List<Converter> converters : converterList){
+            converters.sort(Comparator.comparingLong(Converter::getStart));
         }
     }
 
@@ -96,47 +96,46 @@ public class DayFive implements DailyTask {
         };
     }
 
-    class Converter{
-        long startDestination;
-        long startSource;
-        long range;
-        long dif;
+    public String taskB(List<String> input){
 
-        public Converter(String startDestination, String startSource, String range) {
-            this.startDestination = Long.parseLong(startDestination);
-            this.startSource = Long.parseLong(startSource);
-            this.range = Long.parseLong(range);
-            this.dif = this.startDestination - this.startSource;
-        }
+        Stack<IRange> resultRanges = getConvertedStack(initList, converterList);
 
-        public boolean isInSourceRange(long value){
-            return value >= startSource && value <= startSource + range;
-        }
-
-        public Long convert(long value){
-            return value + this.dif;
-        }
+        long res = resultRanges.stream().map(c -> c.getStart()).min(Long::compareTo).get();
+        return String.valueOf(res);
     }
 
-    public String taskB(List<String> input){
-//
-//        parseInput(input, false);
-//
-//        for(List<Converter> converters: converterList){
-//            for(int i = 0; i < initSet.length; i++){
-//                for(Converter c : converters){
-//                    if(c.isInSourceRange(initSet[i])){
-//                        initSet[i] =  c.convert(initSet[i]);
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//
-//
-//        long res = Arrays.stream(initSet).min(Long::compareTo).get();
-//        return String.valueOf(res);
-        return "";
+    public Stack<IRange> getConvertedStack(List<IRange> initList, List<List<Converter>> converterList){
+        Stack<IRange> currentRanges = new Stack<>();
+        currentRanges.addAll(initList);
+        for(List<Converter> converters: converterList){
+            List<IRange> nextRanges = new ArrayList<>();
+
+            while(!currentRanges.empty()) {
+                IRange r = currentRanges.pop();
+                boolean hasSplitted = false;
+                for (Converter c : converters) {
+                    if (hasSplitted) continue;
+                    if (r.getStart() < c.getStart()) {
+                        nextRanges.add(new RangeFix(r.getStart(), Math.min(r.getEnd(), c.getStart()-1)));
+                        hasSplitted = true;
+                    }
+                    if (r.getStart() <= c.getEnd() && r.getEnd() >= c.getStart()) {
+                        nextRanges.add(new RangeFix(c.convert(Math.max(r.getStart(), c.getStart())), c.convert(Math.min(r.getEnd(), c.getEnd()))));
+                        hasSplitted = true;
+                    }
+                    if (r.getEnd() > c.getEnd() && r.getStart() <= c.getEnd()) {
+                        currentRanges.push(new RangeFix(Math.max(r.getStart(), c.getEnd()+1), r.getEnd()));
+                        hasSplitted = true;
+                    }
+                }
+                if(!hasSplitted){
+                    nextRanges.add(new RangeFix(r.getStart(), r.getEnd()));
+                }
+            }
+            currentRanges.addAll(nextRanges);
+
+        }
+        return currentRanges;
     }
 
 }
