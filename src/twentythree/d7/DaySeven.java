@@ -173,7 +173,6 @@ public class DaySeven implements DailyTask {
         long sum = 0;
         long rank = 1L;
         for(Hand h : hands){
-            System.out.println(h.unparsedHand);
             sum += rank * h.bid;
             rank++;
         }
