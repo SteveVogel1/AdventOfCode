@@ -8,7 +8,7 @@ public interface DailyTask {
     String taskB(List<String> input);
 
     default String getFileName(){
-        return "src/twentytwo/" + this.getClass().getSimpleName() + "/input.txt";
+        return "src/" + this.getClass().getPackageName().replace(".", "/") + "/input.txt";
     }
 
     private List<String> readInput(){
@@ -26,4 +26,6 @@ public interface DailyTask {
 
         System.out.println("Runtime: " + (endTime - startTime) + "ms");
     }
+    //TODO:
+    // eingabe von Beispiel, überprüfung auf richtigkeit und erst dann das andere ausführen
 }

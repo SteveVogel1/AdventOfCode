@@ -7,12 +7,8 @@ import java.util.List;
 public class DayX implements DailyTask {
 
     public static void main(String[] args) {
-        DayX dayOne = new DayX();
-        dayOne.run();
-    }
-
-    public String getFileName() {
-        return "src/twentythree/dX/input.txt";
+        DayX d = new DayX();
+        d.run();
     }
 
 
