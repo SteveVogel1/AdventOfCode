@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Three implements DailyTask {
-
+    final String REGEX = "mul\\((\\d+,\\d+)\\)";
     public static void main(String[] args) {
         Three day = new Three();
         day.run();
@@ -16,19 +16,20 @@ public class Three implements DailyTask {
 
     public String taskA(List<String> input){
         long result = 0;
-        String regex = "mul\\((\\d+,\\d+)\\)";
-        for(String line : input) {
-            List<String[]> pairs = getPairs(line, regex);
-            for (String[] p : pairs) {
-                result += Long.parseLong(p[0]) * Long.parseLong(p[1]);
-            }
-        }
-        return String.valueOf(result);
+        return getResult(input, result);
     }
 
-    private List<String[]> getPairs(String line, String regex){
+    public String taskB(List<String> input){
+        long result = 0;
+        StringBuilder sb = new StringBuilder();
+        input.forEach(sb::append);
+        input = List.of(sb.toString().replaceAll("don't\\(\\).+?do(?!n't)\\(\\)", ""));
+        return getResult(input, result);
+    }
+
+    private List<String[]> getPairs(String line){
         List<String[]> list = new ArrayList<>();
-        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+        final Pattern pattern = Pattern.compile(REGEX, Pattern.MULTILINE);
         final Matcher matcher = pattern.matcher(line);
 
         int counter = 0;
@@ -39,15 +40,17 @@ public class Three implements DailyTask {
                 list.add(matcher.group(i).split(","));
             }
         }
-
         System.out.println("Found " + counter);
-
         return list;
     }
 
-    public String taskB(List<String> input){
-        int result = 0;
-
+    private String getResult(List<String> input, long result) {
+        for(String line : input) {
+            List<String[]> pairs = getPairs(line);
+            for (String[] p : pairs) {
+                result += Long.parseLong(p[0]) * Long.parseLong(p[1]);
+            }
+        }
         return String.valueOf(result);
     }
 }
