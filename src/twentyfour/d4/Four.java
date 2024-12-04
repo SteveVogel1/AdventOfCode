@@ -13,7 +13,7 @@ public class Four implements DailyTask {
 
     public String taskA(List<String> input){
         char[][] grid = getGrid(input);
-        long result = findAllSolutions(grid,"XMAS");
+        long result = findAllSolutions(grid);
 
         return String.valueOf(result);
     }
@@ -34,29 +34,29 @@ public class Four implements DailyTask {
         return grid;
     }
 
-    private long findAllSolutions(char[][] grid, String lookUp){
+    private long findAllSolutions(char[][] grid){
         long counter = 0;
         for(int y = 0; y < grid.length; y++){
             for(int x = 0; x < grid[y].length; x++){
-                counter += hasXmas(grid, x, y, lookUp);
+                counter += hasXmas(grid, x, y);
             }
         }
         return counter;
     }
 
-    private int hasXmas(char[][] grid, int posX, int posY, String lookUp){
+    private int hasXmas(char[][] grid, int posX, int posY){
         int counter = 0;
         for(int[] direction : directions){
-            for(int i = 0; i < lookUp.length(); i++){
+            for(int i = 0; i < "XMAS".length(); i++){
                 int newPosY = posY + i*direction[0];
                 int newPosX = posX + i*direction[1];
                 if(newPosY < 0 || newPosY >= grid.length
                         || newPosX < 0 || newPosX >= grid[0].length
-                        || grid[newPosY][newPosX] != lookUp.toCharArray()[i]){
+                        || grid[newPosY][newPosX] != "XMAS".toCharArray()[i]){
                     i = 5;
                     continue;
                 }
-                if(i == lookUp.length() -1){
+                if(i == "XMAS".length() -1){
                     counter++;
                 }
             }
@@ -78,8 +78,6 @@ public class Four implements DailyTask {
 
     private int lookUp(char[][] grid, int posX, int posY){
         if(grid[posY][posX] == 'A'){
-            int[] foundDirections = new int[2];
-
             int counter = 0;
             for(int i = 1; i < directions.length; i+=2) {
                 int[] direction = directions[i];
