@@ -22,7 +22,7 @@ public class Four implements DailyTask {
 
     public String taskB(List<String> input){
         char[][] grid = getGrid(input);
-        long result = 0; //findAllSolutions(grid, "XMAS");
+        long result = findAllSolutionsB(grid);
 
         return String.valueOf(result);
     }
@@ -49,7 +49,7 @@ public class Four implements DailyTask {
     private int hasXmas(char[][] grid, int posX, int posY, String lookUp){
         int counter = 0;
         for(int[] direction : directions){
-            for(int i = 0; i < 4; i++){
+            for(int i = 0; i < lookUp.length(); i++){
                 int newPosY = posY + i*direction[0];
                 int newPosX = posX + i*direction[1];
                 if(newPosY < 0 || newPosY >= grid.length
@@ -58,13 +58,52 @@ public class Four implements DailyTask {
                     i = 5;
                     continue;
                 }
-                if(i == 3){
+                if(i == lookUp.length() -1){
                     counter++;
                 }
             }
         }
 
         return counter;
+    }
+
+    private long findAllSolutionsB(char[][] grid){
+        long counter = 0;
+        for(int y = 1; y < grid.length-1; y++){
+            for(int x = 1; x < grid[y].length-1; x++){
+                counter += lookUp(grid, x, y);
+            }
+        }
+
+        return counter;
+    }
+
+    private int lookUp(char[][] grid, int posX, int posY){
+        if(grid[posY][posX] == 'A'){
+            int[] foundDirections = new int[2];
+
+            for(int i = 0; i < directions.length; i++) {
+                int[] direction = directions[i];
+                if (grid[posY+ direction[0]][posX+ direction[1]] =='M'
+                        && grid[posY- direction[0]][posX- direction[1]] =='S'){
+                    foundDirections[i % 2]++;
+                }
+            }
+
+            if(foundDirections[0] == 2 || foundDirections[1] == 2){
+                printFound(grid, posX, posY);
+                return 1;
+            }
+
+        }
+        return 0;
+    }
+
+    private void printFound(char[][] grid, int posX, int posY){
+        System.out.println("X: " + posX + " Y: " + posY);
+        System.out.println("" + grid[posY-1][posX-1] + grid[posY-1][posX] + grid[posY-1][posX+1] );
+        System.out.println("" + grid[posY][posX-1] + grid[posY][posX] + grid[posY][posX+1] );
+        System.out.println("" + grid[posY+1][posX-1] + grid[posY+1][posX] + grid[posY+1][posX+1] );
     }
 
     int[][] directions = new int[][]{
