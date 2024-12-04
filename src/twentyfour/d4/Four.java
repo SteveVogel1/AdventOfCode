@@ -2,12 +2,10 @@ package twentyfour.d4;
 
 import twentytwo.helper.DailyTask;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Four implements DailyTask {
+    final boolean DEBUGGING = false;
     public static void main(String[] args) {
         Four day = new Four();
         day.run();
@@ -82,15 +80,16 @@ public class Four implements DailyTask {
         if(grid[posY][posX] == 'A'){
             int[] foundDirections = new int[2];
 
-            for(int i = 0; i < directions.length; i++) {
+            int counter = 0;
+            for(int i = 1; i < directions.length; i+=2) {
                 int[] direction = directions[i];
                 if (grid[posY+ direction[0]][posX+ direction[1]] =='M'
                         && grid[posY- direction[0]][posX- direction[1]] =='S'){
-                    foundDirections[i % 2]++;
+                    counter++;
                 }
             }
 
-            if(foundDirections[0] == 2 || foundDirections[1] == 2){
+            if(counter > 1){
                 printFound(grid, posX, posY);
                 return 1;
             }
@@ -100,10 +99,12 @@ public class Four implements DailyTask {
     }
 
     private void printFound(char[][] grid, int posX, int posY){
-        System.out.println("X: " + posX + " Y: " + posY);
-        System.out.println("" + grid[posY-1][posX-1] + grid[posY-1][posX] + grid[posY-1][posX+1] );
-        System.out.println("" + grid[posY][posX-1] + grid[posY][posX] + grid[posY][posX+1] );
-        System.out.println("" + grid[posY+1][posX-1] + grid[posY+1][posX] + grid[posY+1][posX+1] );
+        if(DEBUGGING) {
+            System.out.println("X: " + posX + " Y: " + posY);
+            System.out.println("" + grid[posY - 1][posX - 1] + grid[posY - 1][posX] + grid[posY - 1][posX + 1]);
+            System.out.println("" + grid[posY][posX - 1] + grid[posY][posX] + grid[posY][posX + 1]);
+            System.out.println("" + grid[posY + 1][posX - 1] + grid[posY + 1][posX] + grid[posY + 1][posX + 1]);
+        }
     }
 
     int[][] directions = new int[][]{
