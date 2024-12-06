@@ -2,10 +2,7 @@ package twentyfour.d5;
 
 import twentytwo.helper.DailyTask;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Five implements DailyTask {
     public static void main(String[] args) {
@@ -32,7 +29,44 @@ public class Five implements DailyTask {
 
     public String taskB(List<String> input){
         long result = 0;
+
+        int inputSplitIndex = input.indexOf("");
+        List<int[]> rules = readRules(input, inputSplitIndex);
+        List<String> pages = getPages(input, inputSplitIndex);
+
+        for(String line : pages){
+            String[] values = line.split(",");
+            if(!checkRules(values, rules)){
+                String[] orderValues = orderValues(values, rules);
+                result += Long.parseLong(orderValues[(orderValues.length/2)]);
+            }
+        }
         return String.valueOf(result);
+    }
+
+    private String[] orderValues(String[] pages, List<int[]> rules){
+        Map<Integer, Integer> lookup = new HashMap<>();
+        for(int i = 0; i < pages.length; i++){
+            lookup.put(Integer.parseInt(pages[i]), i);
+        }
+
+        for(int i = 0; i < rules.size(); i++){
+            int[] rule = rules.get(i);
+            Integer indexA = lookup.get(rule[0]);
+            Integer indexB = lookup.get(rule[1]);
+            if(indexA == null || indexB == null){
+                continue;
+            }
+            if(indexA > indexB) { //SWAP POSITIONS and recheck all rules
+                lookup.put(rule[0], indexB);
+                lookup.put(rule[1], indexA);
+                i = -1;
+            }
+        }
+
+        String[] ordered = new String[pages.length];
+        lookup.forEach( (value, index) -> ordered[index] = String.valueOf(value));
+        return ordered;
     }
 
     private boolean checkRules(String[] pages, List<int[]> rules){
@@ -50,9 +84,7 @@ public class Five implements DailyTask {
             if(indexA > indexB) {
                 return false;
             }
-
         }
-
         return true;
     }
 
