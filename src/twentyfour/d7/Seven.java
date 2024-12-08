@@ -3,7 +3,6 @@ package twentyfour.d7;
 import twentytwo.helper.DailyTask;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public class Seven implements DailyTask {
     public static void main(String[] args) {
@@ -17,7 +16,7 @@ public class Seven implements DailyTask {
         for(String line : input) {
             String[] values = line.split(" ");
             long expected = Long.parseLong(values[0].substring(0, values[0].length()-1));
-            if(check(expected, 0, false, List.of(values).subList(1, values.length).stream().map(Long::valueOf).toList())){
+            if(check(expected, Long.parseLong(values[1]), false, List.of(values).subList(2, values.length).stream().map(Long::valueOf).toList())){
                 result += expected;
             }
         }
@@ -26,17 +25,17 @@ public class Seven implements DailyTask {
     }
 
     private boolean check(long expected, long current, boolean concat, List<Long> values){
-        if(expected == current){
-            return true;
+        if(values.isEmpty()){
+            return expected == current;
         }
-        if(values.isEmpty() || current > expected){
+        if(current > expected){
             return false;
         }
 
         return check(expected, current + values.getFirst(), concat, values.subList(1,values.size()))
                 || check(expected, current * values.getFirst(), concat, values.subList(1,values.size()))
-                || (concat && !values.isEmpty()
-                    && check(expected, current, true, Stream.concat(Stream.of(concatValues(current, values.getFirst())), values.subList(1,values.size()).stream()).toList())
+                || (concat
+                    && check(expected, concatValues(current, values.getFirst()), true, values.subList(1,values.size()))
         );
     }
 
@@ -49,7 +48,7 @@ public class Seven implements DailyTask {
         for(String line : input) {
             String[] values = line.split(" ");
             long expected = Long.parseLong(values[0].substring(0, values[0].length()-1));
-            if(check(expected, 0, true, List.of(values).subList(1, values.length).stream().map(Long::valueOf).toList())){
+            if(check(expected, Long.parseLong(values[1]), true, List.of(values).subList(2, values.length).stream().map(Long::valueOf).toList())){
                 result += expected;
             }
         }
