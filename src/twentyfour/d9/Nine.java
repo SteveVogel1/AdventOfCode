@@ -14,22 +14,20 @@ public class Nine implements DailyTask {
         long result = 0;
         String line = input.getFirst();
 
-        boolean isFile = true;
-        long index = 0;
+        ArrayList<String> system = getSystem(line);
 
-        ArrayList<String> system = new ArrayList<>();
-        for(String s : line.split("")){
-            for(int i = 0; i < Integer.parseInt(s); i++){
-                system.add(isFile ? String.valueOf(index) : ".");
-            }
+        defragmentation(system);
 
-            //Next input preparation
-            if(isFile){
-                index++;
-            }
-            isFile = !isFile;
-        }
+        result = getResult(system, result);
+        return String.valueOf(result);
+    }
 
+    public String taskB(List<String> input){
+        long result = 0;
+        return String.valueOf(result);
+    }
+
+    private void defragmentation(ArrayList<String> system) {
         int leftIndex = 0;
         int rightIndex = system.size() -1;
         while(true){
@@ -47,17 +45,34 @@ public class Nine implements DailyTask {
             leftIndex++;
             rightIndex--;
         }
+    }
 
+    private ArrayList<String> getSystem(String line) {
+        boolean isFile = true;
+        long index = 0;
+
+        ArrayList<String> system = new ArrayList<>();
+        for(String s : line.split("")){
+            for(int i = 0; i < Integer.parseInt(s); i++){
+                system.add(isFile ? String.valueOf(index) : ".");
+            }
+
+            //Next input preparation
+            if(isFile){
+                index++;
+            }
+            isFile = !isFile;
+        }
+        return system;
+    }
+
+
+    private long getResult(ArrayList<String> system, long result) {
         for(int i = 0; i < system.size(); i++){
             if(!system.get(i).equals(".")) {
                 result += i * Long.parseLong(system.get(i));
             }
         }
-        return String.valueOf(result);
-    }
-
-    public String taskB(List<String> input){
-        long result = 0;
-        return String.valueOf(result);
+        return result;
     }
 }
