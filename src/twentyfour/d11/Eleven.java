@@ -14,10 +14,10 @@ public class Eleven implements DailyTask {
         long result = 0;
 
         int numbersOfBlink = 25;
-        Map<String, Integer> line = createStones(input);
+        Map<String, Long> line = createStones(input);
 
         var x = getLastLine(numbersOfBlink, line).values();
-        result = x.stream().mapToInt(Integer::intValue).sum();
+        result = x.stream().mapToLong(Long::longValue).sum();
 
         return String.valueOf(result);
     }
@@ -26,37 +26,37 @@ public class Eleven implements DailyTask {
         long result = 0;
 
         int numbersOfBlink = 75;
-        Map<String, Integer> line = createStones(input);
+        Map<String, Long> line = createStones(input);
 
         var x = getLastLine(numbersOfBlink, line).values();
-        result = x.stream().mapToInt(Integer::intValue).sum();
+        result = x.stream().mapToLong(Long::longValue).sum();
 
         return String.valueOf(result);
     }
 
-    private Map<String, Integer> createStones(List<String> input) {
-        Map<String, Integer> stoneMap = new HashMap<>();
+    private Map<String, Long> createStones(List<String> input) {
+        Map<String, Long> stoneMap = new HashMap<>();
         for(String stone: input.getFirst().split(" ")){
-            stoneMap.put(stone, stoneMap.getOrDefault(stone, 0) + 1);
+            stoneMap.put(stone, stoneMap.getOrDefault(stone, 0L) + 1);
         }
         return stoneMap;
     }
 
-    private Map<String, Integer>  getLastLine(int numbersOfBlink, Map<String, Integer> line) {
+    private Map<String, Long>  getLastLine(int numbersOfBlink, Map<String, Long> line) {
         for(int i = 0; i < numbersOfBlink; i++){
-            Map<String, Integer> nextLine = new HashMap<>();
+            Map<String, Long> nextLine = new HashMap<>();
             for(String stone: line.keySet()){
-                int count = line.get(stone);
+                long count = line.get(stone);
                 if(stone.equals("0")){
-                    nextLine.put("1", nextLine.getOrDefault("1", 0) + count);
+                    nextLine.put("1", nextLine.getOrDefault("1", 0L) + count);
                 }else if(stone.length() % 2 == 0){
                     String leftValue = removeLeadingZeros(stone.substring(0, stone.length() / 2));
-                    nextLine.put(leftValue, nextLine.getOrDefault(leftValue, 0) + count);
+                    nextLine.put(leftValue, nextLine.getOrDefault(leftValue, 0L) + count);
                     String rightValue = removeLeadingZeros(stone.substring(stone.length() / 2));
-                    nextLine.put(rightValue, nextLine.getOrDefault(rightValue, 0) + count);
+                    nextLine.put(rightValue, nextLine.getOrDefault(rightValue, 0L) + count);
                 }else{
                     String value = String.valueOf(Long.parseLong(stone) * 2024);
-                    nextLine.put(value, nextLine.getOrDefault(value, 0) + count);
+                    nextLine.put(value, nextLine.getOrDefault(value, 0L) + count);
                 }
             }
             line = nextLine;
